@@ -1,1 +1,15 @@
 static file- as it is koi file ko serve karne ke liye
+
+from app import db
+db.create_all().....dont use this
+from app import db, app
+with app.app_context():
+    db.create_all()..........use this
+
+
+flask used for api an bacend
+
+loop used so that when smthng deleted then the serial no. gets adjusted
+
+delete- check its occurence first then delete(db.session) and commit
+

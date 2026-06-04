@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -16,17 +16,18 @@ class Site(db.Model):
         return f"{self.sno} - {self.title}"
     
 
-
-
-@app.route("/")
+@app.route("/",methods=["GET","POST"])
 def hello_world():
-    site=Site(title="todo site", desc="this is a todo site")
-    db.session.add(site)
-    db.session.commit()
+    if request.method=="POST":
+        title= request.form['title']
+        desc= request.form['desc']
+        site=Site(title=title, desc=desc)
+        db.session.add(site)
+        db.session.commit()
     all_sites=Site.query.all()
     print(all_sites)
     return render_template("index.html",all_sites=all_sites)
-    #return "<p>Hello, World!</p>"
+
 
 
 @app.route("/show")
@@ -34,5 +35,21 @@ def products():
     all_sites = Site.query.all()
     print(all_sites)
     return 'this is products page'
+
+
+@app.route("/update")
+def update():
+    all_sites = Site.query.all()
+    print(all_sites)
+    return 'this is products page'
+
+@app.route("/delete/<int:sno>")
+def delete(sno):
+    all_sites = Site.query.filter_by(sno=sno).first()
+    db.session.delete(all_sites)
+    db.session.commit()
+    return redirect('/')
+
+
 if __name__ == "__main__":
     app.run(debug=True)
